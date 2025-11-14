@@ -56,6 +56,26 @@ const CaseDetail = () => {
     }
   }, [case_id]);
 
+  // Auto-load data when switching tabs
+  useEffect(() => {
+    if (!case_id) return;
+    
+    switch (activeTab) {
+      case 'notes':
+        loadNotes();
+        break;
+      case 'documents':
+        loadDocuments();
+        break;
+      case 'similar':
+        loadSimilarCases();
+        break;
+      case 'alerts':
+        loadAlerts();
+        break;
+    }
+  }, [activeTab, case_id]);
+
   const loadCaseData = async () => {
     try {
       const data = await getCaseById(case_id!);
@@ -298,7 +318,6 @@ const CaseDetail = () => {
                     />
                   </Label>
                 </div>
-                <Button onClick={loadDocuments}>Load Documents</Button>
                 <div className="space-y-2">
                   {documents.map((doc: any) => (
                     <div key={doc.doc_id} className="glass-card p-4 flex items-center justify-between">
@@ -408,9 +427,6 @@ const CaseDetail = () => {
                 <CardTitle>Similar Cases</CardTitle>
               </CardHeader>
               <CardContent>
-                <Button onClick={loadSimilarCases} className="mb-4">
-                  Load Similar Cases
-                </Button>
                 <div className="space-y-3">
                   {similarCases.map((sc: any) => (
                     <div key={sc.case_id} className="glass-card p-4">
@@ -429,9 +445,6 @@ const CaseDetail = () => {
                 <CardTitle>Notes</CardTitle>
               </CardHeader>
               <CardContent>
-                <Button onClick={loadNotes} className="mb-4">
-                  Load Notes
-                </Button>
                 <div className="space-y-2">
                   {notes.map((note: any, idx: number) => (
                     <div key={idx} className="glass-card p-3">
@@ -452,8 +465,7 @@ const CaseDetail = () => {
                 <CardTitle>Alerts</CardTitle>
               </CardHeader>
               <CardContent>
-                <Button onClick={loadAlerts}>Load Alerts</Button>
-                <div className="space-y-2 mt-4">
+                <div className="space-y-2">
                   {alerts.map((alert: any, idx: number) => (
                     <div key={idx} className="glass-card p-3">
                       <p className="text-sm font-semibold">{alert.message}</p>
